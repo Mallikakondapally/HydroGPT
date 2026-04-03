@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroGPT Ultra | Elite Hydration Ecosystem</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="bubbles" class="bubbles"></div>
+
+    <div class="container" id="mainApp" style="display:none;">
+        <header>
+            <div class="header-left">
+                <h1 id="userWelcome">HydroGPT Ultra</h1>
+                <p class="subtitle" id="dateDisplay">Wednesday, April 2nd</p>
+            </div>
+            <div class="header-actions">
+                <button onclick="showLeaderboard()" class="btn-icon-ultra" title="Leaderboard">🏆 Leaders</button>
+                <button onclick="logout()" class="btn-icon-ultra" title="Logout">Logout 🚪</button>
+                <button onclick="toggleSettings()" class="btn-icon-ultra" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Achievements Badge Row -->
+        <div class="badge-row">
+            <div id="badge-drop" class="badge" title="First Drop">💧</div>
+            <div id="badge-half" class="badge" title="Strict H2O">🔥</div>
+            <div id="badge-full" class="badge" title="Hydration Hero">🏆</div>
+            <div id="badge-turbo" class="badge" title="Turbo Log">⚡</div>
+        </div>
+
+        <main class="ultra-grid">
+            <!-- Liquid Progress Container -->
+            <div class="liquid-card" id="liquidCard">
+                <div class="liquid-container">
+                    <div class="water" id="waterLevel">
+                        <div class="wave"></div>
+                    </div>
+                </div>
+                <div class="liquid-info">
+                    <div class="ultra-current-ml" id="currentAmount">0</div>
+                    <div class="subtitle" id="goalDisplay">Goal: 0ml</div>
+                    <div class="ultra-percent" id="progressPercent">0% COMPLETE</div>
+                </div>
+            </div>
+
+            <div class="right-column" style="display: flex; flex-direction: column; gap: 32px;">
+                <!-- Weekly Analytics Card -->
+                <div class="card-ultra">
+                    <h2 class="card-title-ultra"><span>📊</span> Weekly Trends</h2>
+                    <div id="weeklyChart" class="weekly-chart">
+                        <!-- Chart bars injected here -->
+                    </div>
+                </div>
+
+                <!-- Quick Log Card -->
+                <div class="card-ultra">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 class="card-title-ultra" style="margin-bottom: 0;"><span>💧</span> Quick Log</h2>
+                        <button class="btn-icon-ultra" onclick="showFullHistory()" title="View History">📜</button>
+                    </div>
+
+                    <!-- Drink Type Selector -->
+                    <div class="drink-selector">
+                        <div class="drink-option active" onclick="selectDrink('Water', this)">💧 Water</div>
+                        <div class="drink-option" onclick="selectDrink('Coffee', this)">☕ Coffee</div>
+                        <div class="drink-option" onclick="selectDrink('Tea', this)">🍵 Tea</div>
+                        <div class="drink-option" onclick="selectDrink('Juice', this)">🧃 Juice</div>
+                        <div class="drink-option" onclick="selectDrink('Soda', this)">🥤 Soda</div>
+                    </div>
+
+                    <div class="btn-grid-ultra">
+                        <button class="btn-ultra" onclick="logWater(250)">250 ml</button>
+                        <button class="btn-ultra" onclick="logWater(500)">500 ml</button>
+                        <button class="btn-ultra" onclick="logWater(1000)">1 L</button>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <input type="number" id="customInput" class="input-ultra" placeholder="Custom intake...">
+                        <button class="btn-ultra" onclick="logCustom()" style="padding: 16px 32px; flex: 0;">ADD</button>
+                    </div>
+                    <div id="logHistory" class="log-history">
+                        <!-- History injected here -->
+                    </div>
+                </div>
+
+                <!-- AI Insights Card -->
+                <div class="card-ultra ai-card-ultra">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 class="card-title-ultra" style="margin-bottom: 0;"><span>🧠</span> AI Coach</h2>
+                        <button class="btn-icon-ultra" onclick="fetchInsights()" id="insightBtn" title="Analyze Trends">✨</button>
+                    </div>
+                    <div id="aiContent" class="ai-content-ultra">
+                        Ask your AI coach for a personalized hydration analysis...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Enterprise Auth Overlay -->
+    <div id="authOverlay" class="overlay-ultra" style="display:flex;">
+        <div class="onboarding-ultra">
+            <h1>HydroGPT Ultra</h1>
+            <p class="subtitle" style="margin-bottom: 24px;">Elite Hydration Ecosystem</p>
+            
+            <!-- Login Form -->
+            <div id="loginForm" style="background: var(--card-bg); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border);">
+                <h2 style="margin-bottom: 24px;">Login</h2>
+                <input type="email" id="loginEmail" class="input-ultra" placeholder="Email Address">
+                <input type="password" id="loginPass" class="input-ultra" placeholder="Password">
+                <button class="btn-ultra" onclick="handleLogin()" id="loginBtn" style="width: 100%; margin-top: 10px;">ENTER DASHBOARD</button>
+                <p class="subtitle" style="margin-top: 20px; cursor: pointer; font-size: 0.9rem;" onclick="toggleAuthMode('register')">New here? Create an Account</p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none; background: var(--card-bg); padding: 40px; border-radius: 32px; border: 1px solid var(--glass-border);">
+                <h2 style="margin-bottom: 24px;">Register</h2>
+                <input type="text" id="regName" class="input-ultra" placeholder="Full Name">
+                <input type="email" id="regEmail" class="input-ultra" placeholder="Email Address">
+                <input type="number" id="regWeight" class="input-ultra" placeholder="Weight (kg)">
+                <input type="password" id="regPass" class="input-ultra" placeholder="Password">
+                <button class="btn-ultra" onclick="handleRegister()" id="regBtn" style="width: 100%; margin-top: 10px;">CREATE ACCOUNT</button>
+                <p class="subtitle" style="margin-top: 20px; cursor: pointer; font-size: 0.9rem;" onclick="toggleAuthMode('login')">Already have an account? Login</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Overlay -->
+    <div id="leaderboardOverlay" class="overlay-ultra" style="display:none;">
+        <div class="card-ultra" style="max-width: 500px; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h2 style="font-size: 1.8rem;">🏆 Leaders</h2>
+                <button onclick="toggleLeaderboard()" class="btn-icon-ultra">✕</button>
+            </div>
+            <div id="leaderboardList" class="leaderboard-list">
+                <!-- Leaderboard items injected here -->
+            </div>
+            <p class="subtitle" style="text-align: center; margin-top: 30px; font-size: 0.8rem;">Rankings are based on daily goal completion %</p>
+        </div>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div id="settingsOverlay" class="overlay-ultra" style="display:none;">
+        <div class="card-ultra" style="max-width: 480px; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h2 style="font-size: 1.8rem;">Profile Settings</h2>
+                <button onclick="toggleSettings()" class="btn-icon-ultra">✕</button>
+            </div>
+            <div style="margin-bottom: 32px;">
+                <label class="subtitle" style="display: block; margin-bottom: 12px; font-size: 0.9rem;">CUSTOM DAILY GOAL (ML)</label>
+                <input type="number" id="settingGoal" class="input-ultra" placeholder="Override auto-goal...">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <div>
+                    <h3 style="font-size: 1.1rem;">Hydration Reminders</h3>
+                    <p class="subtitle" style="font-size: 0.9rem;">Push notifications every 2 hours</p>
+                </div>
+                <input type="checkbox" id="settingReminders" style="width: 24px; height: 24px; accent-color: var(--primary-color);">
+            </div>
+            <button class="btn-ultra" style="width: 100%; margin-bottom: 16px;" onclick="updateSettings()">SAVE SETTINGS</button>
+            <button class="btn-ultra" style="width: 100%; background: #991b1b33; color: #f87171; border-color: #991b1b33;" onclick="resetApp()">RESET ALL DATA</button>
+        </div>
+    </div>
+
+    <!-- History Overlay -->
+    <div id="historyOverlay" class="overlay-ultra" style="display:none;">
+        <div class="card-ultra" style="max-width: 500px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="font-size: 1.8rem;">Drink History</h2>
+                <button onclick="toggleHistory()" class="btn-icon-ultra">✕</button>
+            </div>
+            <div id="fullLogHistory" style="overflow-y: auto; flex: 1; padding-right: 10px;">
+                <!-- Full history injected here -->
+            </div>
+            <p class="subtitle" style="text-align: center; margin-top: 20px; font-size: 0.8rem;">All logs for today</p>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
